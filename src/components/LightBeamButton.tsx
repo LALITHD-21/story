@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -9,9 +9,8 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export interface LightBeamButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface LightBeamButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
-  className?: string;
   gradientColors?: [string, string, string]; // Optional custom gradient colors
   transparentBg?: boolean;
 }
