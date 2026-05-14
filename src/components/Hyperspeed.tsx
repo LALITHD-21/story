@@ -283,6 +283,8 @@ export const Hyperspeed = forwardRef<HTMLDivElement, HyperspeedProps>(({ effectO
   );
 });
 
+Hyperspeed.displayName = "Hyperspeed";
+
 export default Hyperspeed;
 
 export const hyperspeedPresets = {

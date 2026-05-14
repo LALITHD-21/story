@@ -18,24 +18,6 @@ export default function ScrollyCanvas() {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, FRAME_COUNT - 1]);
 
-  useEffect(() => {
-    const loadedImages: HTMLImageElement[] = [];
-    let loadedCount = 0;
-
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image();
-      img.src = currentFrame(i);
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === FRAME_COUNT) {
-          drawFrame(0, loadedImages);
-        }
-      };
-      loadedImages.push(img);
-    }
-    setImages(loadedImages);
-  }, []);
-
   const drawFrame = (index: number, imgs: HTMLImageElement[]) => {
     if (!canvasRef.current || !imgs[index]) return;
     const canvas = canvasRef.current;
@@ -62,6 +44,24 @@ export default function ScrollyCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   };
+
+  useEffect(() => {
+    const loadedImages: HTMLImageElement[] = [];
+    let loadedCount = 0;
+
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      const img = new Image();
+      img.src = currentFrame(i);
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === FRAME_COUNT) {
+          drawFrame(0, loadedImages);
+          setImages(loadedImages);
+        }
+      };
+      loadedImages.push(img);
+    }
+  }, []);
 
   useMotionValueEvent(frameIndex, "change", (latest) => {
     if (images.length > 0) {

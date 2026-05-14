@@ -43,7 +43,7 @@ export default function ExplodedGallery({ items }: ExplodedGalleryProps) {
         }
       });
 
-      let mm = gsap.matchMedia();
+      const mm = gsap.matchMedia();
 
       // Desktop Animation
       mm.add("(min-width: 1024px)", () => {

@@ -57,9 +57,7 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
   const currentMouseRef = useRef(new THREE.Vector2(0.5, 0.5));
   const velocityRef = useRef(new THREE.Vector2(0, 0));
   const fadeOpacityRef = useRef(1.0);
-  const lastMoveTimeRef = useRef(
-    typeof performance !== "undefined" ? performance.now() : Date.now()
-  );
+  const lastMoveTimeRef = useRef(0);
   const pointerActiveRef = useRef(false);
   const runningRef = useRef(false);
 
@@ -269,6 +267,7 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
     ro.observe(host);
 
     const start = performance.now();
+    lastMoveTimeRef.current = start;
     const animate = () => {
       const now = performance.now();
       const t = (now - start) / 1000;

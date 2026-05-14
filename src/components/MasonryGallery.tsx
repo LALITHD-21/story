@@ -19,7 +19,7 @@ const useMedia = (queries: string[], values: number[], defaultValue: number): nu
   useEffect(() => {
     const handler = () => setValue(get);
     queries.forEach(q => window.matchMedia(q).addEventListener('change', handler));
-    return () => queries.forEach(q => window.matchMedia(q).removeEventListener('change', handler));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queries]);
 
   return value;
@@ -117,7 +117,7 @@ export const MasonryGallery: React.FC<MasonryGalleryProps> = ({
     let direction = animateFrom;
     if (animateFrom === 'random') {
       const dirs = ['top', 'bottom', 'left', 'right'];
-      direction = dirs[Math.floor(Math.random() * dirs.length)] as any;
+      direction = dirs[Math.floor(Math.random() * dirs.length)] as NonNullable<MasonryGalleryProps['animateFrom']>;
     }
 
     switch (direction) {
@@ -198,6 +198,7 @@ export const MasonryGallery: React.FC<MasonryGalleryProps> = ({
     });
 
     if (grid.length > 0) hasMounted.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [grid, imagesReady, stagger, animateFrom, blurToFocus, duration, ease]);
 
   const handleMouseEnter = (id: string, element: HTMLElement) => {

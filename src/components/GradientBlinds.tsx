@@ -214,7 +214,7 @@ void main() {
 
     const { arr: colorArr, count: colorCount } = prepStops(gradientColors);
 
-    const uniforms: any = {
+    const uniforms: Record<string, { value: unknown }> = {
       iResolution: {
         value: [gl.drawingBufferWidth, gl.drawingBufferHeight, 1]
       },
@@ -281,7 +281,7 @@ void main() {
 
     const onPointerMove = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
-      const scale = (renderer as any).dpr || 1;
+      const scale = (renderer as { dpr?: number }).dpr || 1;
       const x = (e.clientX - rect.left) * scale;
       const y = (rect.height - (e.clientY - rect.top)) * scale;
       mouseTargetRef.current = [x, y];
@@ -330,9 +330,9 @@ void main() {
         container.removeChild(canvas);
       }
       
-      const callIfFn = (obj: any, key: string) => {
-        if (obj && typeof obj[key] === 'function') {
-          obj[key]();
+      const callIfFn = (obj: unknown, key: string) => {
+        if (obj && typeof (obj as Record<string, unknown>)[key] === 'function') {
+          ((obj as Record<string, unknown>)[key] as () => void)();
         }
       };
       

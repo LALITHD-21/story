@@ -116,7 +116,10 @@ export interface AuroraProps {
 export function Aurora(props: AuroraProps) {
   const { colorStops = ['#FF7A18', '#C44536', '#FF7A18'], amplitude = 1.0, blend = 0.5 } = props;
   const propsRef = useRef<AuroraProps>(props);
-  propsRef.current = props;
+  
+  useEffect(() => {
+    propsRef.current = props;
+  }, [props]);
 
   const ctnDom = useRef<HTMLDivElement>(null);
 
@@ -138,19 +141,6 @@ export function Aurora(props: AuroraProps) {
     // Ensure canvas is transparent
     gl.canvas.style.backgroundColor = 'transparent';
 
-    let program: Program | undefined;
-
-    function resize() {
-      if (!ctn) return;
-      const width = ctn.offsetWidth;
-      const height = ctn.offsetHeight;
-      renderer.setSize(width, height);
-      if (program) {
-        program.uniforms.uResolution.value = [width, height];
-      }
-    }
-    window.addEventListener('resize', resize);
-
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) {
       delete geometry.attributes.uv;
@@ -161,7 +151,7 @@ export function Aurora(props: AuroraProps) {
       return [c.r, c.g, c.b];
     });
 
-    program = new Program(gl, {
+    const program = new Program(gl, {
       vertex: VERT,
       fragment: FRAG,
       uniforms: {
@@ -172,6 +162,15 @@ export function Aurora(props: AuroraProps) {
         uBlend: { value: blend }
       }
     });
+
+    function resize() {
+      if (!ctn) return;
+      const width = ctn.offsetWidth;
+      const height = ctn.offsetHeight;
+      renderer.setSize(width, height);
+      program.uniforms.uResolution.value = [width, height];
+    }
+    window.addEventListener('resize', resize);
 
     const mesh = new Mesh(gl, { geometry, program });
     ctn.appendChild(gl.canvas);

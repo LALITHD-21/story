@@ -37,7 +37,7 @@ export default function AnimatedHeading({ text, className = "", highlightWord, h
     },
   };
 
-  const MotionTag = motion[as as keyof typeof motion] as any;
+  const MotionTag = motion[as as keyof typeof motion] as React.ElementType;
 
   return (
     <MotionTag

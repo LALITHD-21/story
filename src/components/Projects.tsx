@@ -1,6 +1,4 @@
 "use client";
-import { Star, GitFork } from "lucide-react";
-import { motion } from "framer-motion";
 import AnimatedHeading from "./AnimatedHeading";
 import ExplodedGallery from "./ExplodedGallery";
 
