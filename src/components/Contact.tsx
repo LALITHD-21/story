@@ -100,12 +100,31 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     setStatus("idle");
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      setStatus("success");
-      setFormData({ name: "", email: "", message: "" });
-      setTimeout(() => setStatus("idle"), 5000);
-    } catch {
+      const formDataToSubmit = new FormData();
+      formDataToSubmit.append("name", formData.name);
+      formDataToSubmit.append("email", formData.email);
+      formDataToSubmit.append("message", formData.message);
+      formDataToSubmit.append("access_key", "156d9e73-7368-4e85-866b-dc1c473a59e6");
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formDataToSubmit
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        console.error("Web3Forms Error:", data);
+        setStatus("error");
+      }
+    } catch (error) {
+      console.error("Web3Forms Fetch Error:", error);
       setStatus("error");
     } finally {
       setIsSubmitting(false);
