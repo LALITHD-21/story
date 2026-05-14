@@ -304,7 +304,7 @@ void main() {
         let factor = 1 - Math.exp(-dt / tau);
         if (factor > 1) factor = 1;
         const target = mouseTargetRef.current;
-        const cur = uniforms.iMouse.value;
+        const cur = uniforms.iMouse.value as number[];
         cur[0] += (target[0] - cur[0]) * factor;
         cur[1] += (target[1] - cur[1]) * factor;
       } else {
