@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { clsx, type ClassValue } from 'clsx';
