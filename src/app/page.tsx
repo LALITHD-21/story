@@ -1,15 +1,18 @@
-import ScrollyCanvas from "@/components/ScrollyCanvas";
-import Overlay from "@/components/Overlay";
-import About from "@/components/About";
-import Projects from "@/components/Projects";
+import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import NoiseLayer from "@/components/NoiseLayer";
-import AmbientBlobs from "@/components/AmbientBlobs";
+import About from "@/components/About";
+import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
 import Timeline from "@/components/Timeline";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import GhostCursor from "@/components/GhostCursor";
+
+// Heavy WebGL/Canvas/GSAP components — must be loaded client-side only
+const ScrollyCanvas = dynamic(() => import("@/components/ScrollyCanvas"), { ssr: false });
+const Overlay = dynamic(() => import("@/components/Overlay"), { ssr: false });
+const AmbientBlobs = dynamic(() => import("@/components/AmbientBlobs"), { ssr: false });
+const GhostCursor = dynamic(() => import("@/components/GhostCursor"), { ssr: false });
 
 export default function Home() {
   return (
