@@ -2,6 +2,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MapPin, GraduationCap } from "lucide-react";
 import { useRef } from "react";
+import AnimatedHeading from "./AnimatedHeading";
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,24 +28,24 @@ export default function About() {
           <motion.div 
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-[-20px] rounded-full border border-dashed border-[#00D1FF]/40"
+            className="absolute inset-[-20px] rounded-full border border-dashed border-[#FF7A18]/40"
           />
           <motion.div 
             animate={{ rotate: -360 }}
             transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-[-40px] rounded-full border border-dotted border-[#7EE7FF]/30"
+            className="absolute inset-[-40px] rounded-full border border-dotted border-[#FFD6A5]/30"
           />
           {/* Glow Pulse */}
-          <div className="absolute inset-0 rounded-full bg-[#00D1FF]/10 blur-[50px] group-hover:bg-[#00D1FF]/20 transition-all duration-700" />
+          <div className="absolute inset-0 rounded-full bg-[#FF7A18]/10 blur-[50px] group-hover:bg-[#FF7A18]/20 transition-all duration-700" />
           
           {/* Holographic Border / Image Container */}
           <motion.div 
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="relative w-full h-full rounded-full border border-white/10 overflow-hidden backdrop-blur-2xl bg-[#121212]/80 shadow-[0_0_30px_rgba(0,209,255,0.2)] flex items-center justify-center p-2"
+            className="relative w-full h-full rounded-full border border-white/10 overflow-hidden backdrop-blur-2xl bg-[#0F0B08]/80 shadow-[0_0_30px_rgba(255,122,24,0.2)] flex items-center justify-center p-2"
           >
-            <div className="w-full h-full rounded-full bg-[#0B0B0F] border border-white/5 flex items-center justify-center overflow-hidden relative">
-               <div className="absolute inset-0 bg-[#00D1FF]/10 mix-blend-overlay z-10 pointer-events-none" />
+            <div className="w-full h-full rounded-full bg-[#16110D] border border-white/5 flex items-center justify-center overflow-hidden relative">
+               <div className="absolute inset-0 bg-[#FF7A18]/10 mix-blend-overlay z-10 pointer-events-none" />
                <img src="/profile.jpg" alt="LALITH D" className="w-full h-full object-cover object-center relative z-0" />
             </div>
           </motion.div>
@@ -54,63 +55,43 @@ export default function About() {
 
         {/* Right Side: Details */}
         <div className="flex-1 flex flex-col items-start relative z-10">
-          <motion.h2 
-            initial={{ opacity: 0, x: 50, filter: "blur(10px)" }}
-            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1, ease: "easeOut", type: "spring", stiffness: 100 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(0,209,255,0.2)] mb-4"
-          >
-            LALITH D
-          </motion.h2>
-          
-          <motion.h3 
-            initial={{ opacity: 0, x: 50, filter: "blur(10px)" }}
-            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 1, type: "spring" }}
-            className="text-lg md:text-xl font-medium tracking-wide text-[#00D1FF] leading-relaxed mb-8"
-          >
-            AI & AGI Engineer | Cybersecurity Enthusiast | AMD Slingshot Ideathon 2nd runner up <br className="hidden md:block" /> 
-            CEH Aspirant | Blue Team Specialist | Penetration Tester
-          </motion.h3>
+          <AnimatedHeading 
+            text="Engineering immersive digital experiences."
+            className="text-4xl md:text-5xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,122,24,0.2)] mb-4 max-w-lg"
+          />
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-6 mb-10 text-white/60 text-sm font-medium tracking-widest uppercase"
+            className="flex flex-col sm:flex-row gap-6 mb-10 text-white/60 text-sm font-medium tracking-widest uppercase mt-6"
           >
             <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-[#00D1FF]" />
-              Tumakuru, Karnataka, India
+              <MapPin className="w-5 h-5 text-[#FF7A18]" />
+              <AnimatedHeading as="span" text="Tumakuru, Karnataka, India" />
             </div>
             <div className="flex items-center gap-2">
-              <GraduationCap className="w-5 h-5 text-[#00D1FF]" />
-              Tumkur University
+              <GraduationCap className="w-5 h-5 text-[#FF7A18]" />
+              <AnimatedHeading as="span" text="Tumkur University" />
             </div>
           </motion.div>
 
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
+          <AnimatedHeading 
+            as="p"
+            text="I’m LALITH D — a creative developer and cybersecurity enthusiast focused on building visually immersive, secure, and high-performance digital systems that blend technology with refined user experience."
             className="text-white/70 text-lg md:text-xl font-light leading-relaxed mb-8 max-w-3xl"
-          >
-            I specialize in cybersecurity, AI-driven systems, and secure digital infrastructure engineering. My focus is on architecting resilient platforms, advanced threat defense mechanisms, and immersive digital experiences that merge innovation with operational precision.
-          </motion.p>
+          />
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            className="p-6 rounded-2xl bg-[#00D1FF]/5 border border-[#00D1FF]/20 backdrop-blur-md relative overflow-hidden group cursor-default shadow-[0_0_30px_rgba(0,209,255,0.1)]"
+            className="p-6 rounded-2xl bg-[#FF7A18]/5 border border-[#FF7A18]/20 backdrop-blur-md relative overflow-hidden group cursor-default shadow-[0_0_30px_rgba(255,122,24,0.1)]"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#00D1FF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <p className="text-[#7EE7FF] text-lg font-medium italic relative z-10 tracking-wide">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A18]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <p className="text-[#FFD6A5] text-lg font-medium italic relative z-10 tracking-wide">
               “Securing the future through intelligent systems and strategic cyber defense.”
             </p>
           </motion.div>

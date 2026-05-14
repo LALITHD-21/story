@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased scroll-smooth`}>
-      <body className="bg-[#121212] text-white font-sans overflow-x-hidden m-0 p-0">{children}</body>
+      <body className="bg-[#0F0B08] text-white font-sans overflow-x-hidden m-0 p-0">{children}</body>
     </html>
   );
 }

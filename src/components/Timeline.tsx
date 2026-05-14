@@ -1,7 +1,9 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Crosshair } from "lucide-react";
+import { Circle } from "lucide-react";
 import { useRef } from "react";
+import AnimatedHeading from "./AnimatedHeading";
+import { GradientBlinds } from "./GradientBlinds";
 
 export default function Timeline() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -11,17 +13,11 @@ export default function Timeline() {
     offset: ["start center", "end center"]
   });
 
-  // Maps the scroll progress to a percentage string for the line height
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   const experiences = [
     {
       year: "PRESENT",
-      role: "Cyber Security Professional",
-      desc: "Architecting resilient digital infrastructures and executing advanced threat intelligence operations."
-    },
-    {
-      year: "EDUCATION",
       role: "BCA Degree",
       desc: "Advancing expertise in secure computing, networking, and intelligent system engineering at Vaisiri Institute of Technology and Management."
     },
@@ -44,57 +40,85 @@ export default function Timeline() {
 
   return (
     <section ref={containerRef} className="relative z-20 bg-transparent py-32 px-8 md:px-24 w-full">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-sm font-bold tracking-[0.3em] text-[#00D1FF] uppercase mb-4">Trajectory</h2>
-        <h3 className="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-24 drop-shadow-[0_0_15px_rgba(0,209,255,0.3)]">
-          Operational Evolution
-        </h3>
+      {/* Gradient Blinds Background Effect */}
+      <div className="absolute inset-0 z-0 opacity-40">
+        <GradientBlinds
+          gradientColors={['#FF7A18', '#C44536', '#16110D']}
+          angle={-15}
+          noise={0.2}
+          blindCount={20}
+          blindMinWidth={40}
+          spotlightRadius={0.6}
+          spotlightSoftness={0.8}
+          spotlightOpacity={0.9}
+          mouseDampening={0.12}
+          distortAmount={2}
+          shineDirection="left"
+        />
+      </div>
+      {/* Gradient to blend with section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0F0B08] via-transparent to-[#0F0B08] z-10 pointer-events-none" />
 
-        <div className="relative border-l-2 border-dashed border-[#00D1FF]/30 ml-4 md:ml-0 pb-10">
+      <div className="max-w-5xl mx-auto relative z-10">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-sm font-bold tracking-[0.3em] text-[#FF7A18] uppercase mb-4"
+        >
+          Trajectory
+        </motion.h2>
+        <AnimatedHeading 
+          text="Operational Evolution"
+          className="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-24 drop-shadow-[0_0_15px_rgba(255,122,24,0.15)]"
+        />
+
+        <div className="relative border-l-2 border-dashed border-[#FF7A18]/20 ml-4 md:ml-0 pb-10">
           
-          {/* Animated Solid Neon Running Line */}
+          {/* Animated Warm Running Line */}
           <motion.div 
             style={{ height: lineHeight }}
-            className="absolute top-0 left-[-2px] w-[2px] bg-[#00D1FF] shadow-[0_0_15px_#00D1FF] origin-top z-0"
+            className="absolute top-0 left-[-2px] w-[2px] bg-gradient-to-b from-[#FF7A18] to-[#FFB347] shadow-[0_0_12px_rgba(255,122,24,0.6)] origin-top z-0"
           >
-            {/* Glowing tracer head tracking down the line */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#00D1FF] rounded-full shadow-[0_0_20px_#00D1FF,0_0_40px_#00D1FF] border-2 border-[#ffffff] animate-pulse" />
+            {/* Glowing tracer head */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#FF7A18] rounded-full shadow-[0_0_15px_rgba(255,122,24,0.8),0_0_30px_rgba(255,122,24,0.4)] border-2 border-white/80 animate-pulse" />
           </motion.div>
 
           <div className="relative z-10 pt-4">
             {experiences.map((exp, idx) => (
               <motion.div 
                 key={idx}
-                initial={{ opacity: 0, x: -50, scale: 0.9 }}
+                initial={{ opacity: 0, x: -40, scale: 0.95 }}
                 whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.8, type: "spring", stiffness: 60 }}
-                className="mb-20 pl-12 md:pl-16 relative group"
+                className="mb-[30vh] pl-12 md:pl-16 relative group sticky"
+                style={{ top: `calc(20vh + ${idx * 1.5}rem)`, zIndex: 20 + idx }}
               >
-                {/* Animated HUD Node */}
-                <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-[#121212] border-2 border-[#00D1FF] flex items-center justify-center shadow-[0_0_15px_#00D1FF] group-hover:scale-125 group-hover:bg-[#00D1FF] transition-all duration-500 z-10">
-                  <Crosshair className="w-5 h-5 text-[#00D1FF] group-hover:text-black transition-colors" />
-                  {/* Ping animation */}
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-[#00D1FF] opacity-40 animate-ping group-hover:opacity-0 transition-opacity" />
+                {/* Timeline Node */}
+                <div className="absolute -left-[21px] top-0 w-10 h-10 rounded-full bg-[#0F0B08] border-2 border-[#FF7A18]/60 flex items-center justify-center shadow-[0_0_12px_rgba(255,122,24,0.3)] group-hover:scale-110 group-hover:bg-[#FF7A18]/10 group-hover:border-[#FF7A18] transition-all duration-500 z-10">
+                  <Circle className="w-4 h-4 text-[#FF7A18]/70 group-hover:text-[#FF7A18] transition-colors" />
                 </div>
                 
-                {/* Tactical Glassmorphism Card */}
+                {/* Glassmorphism Card */}
                 <motion.div 
-                  whileHover={{ scale: 1.02, x: 10 }}
-                  className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-xl transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:bg-white/[0.04] hover:border-[#00D1FF]/60 hover:shadow-[0_0_40px_rgba(0,209,255,0.2)] relative overflow-hidden transform-gpu"
+                  whileHover={{ scale: 1.02, x: 8 }}
+                  className="p-8 rounded-2xl bg-[#16110D]/60 border border-white/[0.08] backdrop-blur-xl transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.4)] hover:bg-[#16110D]/80 hover:border-[#FF7A18]/30 hover:shadow-[0_0_35px_rgba(255,122,24,0.1)] relative overflow-hidden transform-gpu"
                 >
-                  {/* Cyber Scanline Overlay */}
-                  <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,209,255,0.03)_50%)] bg-[length:100%_4px] pointer-events-none" />
+                  {/* Warm gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A18]/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                   
-                  <span className="text-xs font-bold tracking-[0.3em] text-[#7EE7FF] mb-3 block">
+                  <span className="text-xs font-bold tracking-[0.3em] text-[#FFD6A5]/70 mb-3 block relative z-10">
                     {exp.year}
                   </span>
-                  <h4 className="text-2xl md:text-3xl font-black text-white mb-4 tracking-tight">
+                  <h4 className="text-2xl md:text-3xl font-black text-white mb-4 tracking-tight relative z-10">
                     {exp.role}
                   </h4>
-                  <p className="text-white/60 font-light leading-relaxed text-lg">
-                    {exp.desc}
-                  </p>
+                  <AnimatedHeading 
+                    as="p"
+                    text={exp.desc}
+                    className="text-white/55 font-light leading-relaxed text-lg relative z-10"
+                  />
                 </motion.div>
               </motion.div>
             ))}
