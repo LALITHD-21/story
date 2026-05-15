@@ -1,36 +1,38 @@
 "use client";
-import { motion, useTransform, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 import { LightBeamButton } from "./LightBeamButton";
 
-interface OverlayProps {
-  scrollProgress: MotionValue<number>;
-}
-
-export default function Overlay({ scrollProgress }: OverlayProps) {
+export default function Overlay() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
 
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
   // Section 1: Hero Intro (0% scroll) - Center
-  const op1 = useTransform(scrollProgress, [0, 0.12, 0.20], [1, 1, 0]);
-  const y1 = useTransform(scrollProgress, [0, 0.20], [0, -120]);
-  const blur1 = useTransform(scrollProgress, [0.12, 0.20], [0, 12]);
+  const op1 = useTransform(scrollYProgress, [0, 0.12, 0.20], [1, 1, 0]);
+  const y1 = useTransform(scrollYProgress, [0, 0.20], [0, -120]);
+  const blur1 = useTransform(scrollYProgress, [0.12, 0.20], [0, 12]);
 
   // Section 2: Statement (30% scroll) - Left Aligned
-  const op2 = useTransform(scrollProgress, [0.22, 0.30, 0.40, 0.48], [0, 1, 1, 0]);
-  const y2 = useTransform(scrollProgress, [0.22, 0.48], [120, -120]);
-  const blur2In = useTransform(scrollProgress, [0.22, 0.28], [8, 0]);
-  const blur2Out = useTransform(scrollProgress, [0.42, 0.48], [0, 8]);
+  const op2 = useTransform(scrollYProgress, [0.22, 0.30, 0.40, 0.48], [0, 1, 1, 0]);
+  const y2 = useTransform(scrollYProgress, [0.22, 0.48], [120, -120]);
+  const blur2In = useTransform(scrollYProgress, [0.22, 0.28], [8, 0]);
+  const blur2Out = useTransform(scrollYProgress, [0.42, 0.48], [0, 8]);
 
   // Section 3: Philosophy (60% scroll) - Right Aligned
-  const op3 = useTransform(scrollProgress, [0.52, 0.60, 0.70, 0.76], [0, 1, 1, 0]);
-  const y3 = useTransform(scrollProgress, [0.52, 0.76], [120, -120]);
-  const blur3In = useTransform(scrollProgress, [0.52, 0.58], [8, 0]);
-  const blur3Out = useTransform(scrollProgress, [0.72, 0.76], [0, 8]);
+  const op3 = useTransform(scrollYProgress, [0.52, 0.60, 0.70, 0.76], [0, 1, 1, 0]);
+  const y3 = useTransform(scrollYProgress, [0.52, 0.76], [120, -120]);
+  const blur3In = useTransform(scrollYProgress, [0.52, 0.58], [8, 0]);
+  const blur3Out = useTransform(scrollYProgress, [0.72, 0.76], [0, 8]);
 
   // Section 4: Closing (85% - 100%)
-  const op4 = useTransform(scrollProgress, [0.82, 0.88, 0.96, 1], [0, 1, 1, 0]);
-  const scale4 = useTransform(scrollProgress, [0.82, 1], [0.85, 1.1]);
-  const blur4 = useTransform(scrollProgress, [0.82, 0.88], [10, 0]);
+  const op4 = useTransform(scrollYProgress, [0.82, 0.88, 0.96, 1], [0, 1, 1, 0]);
+  const scale4 = useTransform(scrollYProgress, [0.82, 1], [0.85, 1.1]);
+  const blur4 = useTransform(scrollYProgress, [0.82, 0.88], [10, 0]);
 
   // Mouse glow: use ref + direct DOM style — no setState, no re-renders
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function Overlay({ scrollProgress }: OverlayProps) {
     if (!glow) return;
 
     // Don't attach on touch devices (no cursor)
-    if (typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0)) {
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
       glow.style.display = "none";
       return;
     }
@@ -55,6 +57,7 @@ export default function Overlay({ scrollProgress }: OverlayProps) {
 
       if (rafId === null) {
         const animate = () => {
+          // Lerp for smooth spring-like motion
           currentX += (targetX - currentX) * 0.12;
           currentY += (targetY - currentY) * 0.12;
           glow.style.transform = `translate(${currentX}px, ${currentY}px)`;
@@ -79,9 +82,9 @@ export default function Overlay({ scrollProgress }: OverlayProps) {
   }, []);
 
   return (
-    <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
+    <div ref={containerRef} className="absolute inset-0 w-full h-full z-10 pointer-events-none">
 
-      {/* Warm glow tracking cursor */}
+      {/* Warm glow tracking cursor — direct DOM update, no re-render */}
       <div
         ref={glowRef}
         className="fixed top-0 left-0 w-80 h-80 bg-[#FF7A18] rounded-full pointer-events-none mix-blend-screen"

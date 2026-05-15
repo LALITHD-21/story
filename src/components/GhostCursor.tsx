@@ -260,9 +260,7 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
       const hpx = Math.max(1, Math.floor(cssH * pixelRatio));
       material.uniforms.iResolution.value.set(wpx, hpx, 1);
       material.uniforms.iScale.value = calculateScale(host);
-      if (wpx > 0 && hpx > 0) {
-        bloomPass.setSize(wpx, hpx);
-      }
+      bloomPass.setSize(wpx, hpx);
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -273,16 +271,8 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
     const animate = () => {
       const now = performance.now();
       const t = (now - start) / 1000;
-      const mat = materialRef.current;
-      const comp = composerRef.current;
-      if (!mat || !comp) return;
-
-      const rect = host.getBoundingClientRect();
-      if (rect.width < 1 || rect.height < 1) {
-        rafRef.current = requestAnimationFrame(animate);
-        return;
-      }
-
+      const mat = materialRef.current!;
+      const comp = composerRef.current!;
       if (pointerActiveRef.current) {
         velocityRef.current.set(currentMouseRef.current.x - mat.uniforms.iMouse.value.x, currentMouseRef.current.y - mat.uniforms.iMouse.value.y);
         mat.uniforms.iMouse.value.copy(currentMouseRef.current);
