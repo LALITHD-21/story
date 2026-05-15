@@ -300,7 +300,7 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
       headRef.current = (headRef.current + 1) % N;
       trailBufRef.current[headRef.current].copy(mat.uniforms.iMouse.value);
       const arr = mat.uniforms.iPrevMouse.value as THREE.Vector2[];
-      for (int i = 0; i < N; i++) {
+      for (let i = 0; i < N; i++) {
         const srcIdx = (headRef.current - i + N) % N;
         arr[i].copy(trailBufRef.current[srcIdx]);
       }
