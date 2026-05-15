@@ -199,7 +199,7 @@ export default function Skills() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center z-20">
-                  <span className="text-lg font-black text-white/90 group-hover:text-[#FFB347] transition-colors tracking-tighter">
+                  <span className="text-3xl font-black text-white group-hover:text-[#FFB347] transition-all duration-500 tracking-tighter drop-shadow-[0_0_10px_rgba(255,122,24,0.2)]">
                     <AnimatedCounter value={skill.level} delay={0.1 + idx * 0.08} />
                   </span>
                 </div>

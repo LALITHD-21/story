@@ -30,7 +30,7 @@ export default function Overlay() {
   const blur3Out = useTransform(scrollYProgress, [0.72, 0.76], [0, 8]);
 
   // Section 4: Closing (85% - 100%)
-  const op4 = useTransform(scrollYProgress, [0.82, 0.88, 0.96, 1], [0, 1, 1, 0]);
+  const op4 = useTransform(scrollYProgress, [0.82, 0.88, 1], [0, 1, 1]);
   const scale4 = useTransform(scrollYProgress, [0.82, 1], [0.85, 1.1]);
   const blur4 = useTransform(scrollYProgress, [0.82, 0.88], [10, 0]);
 

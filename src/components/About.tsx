@@ -14,6 +14,7 @@ export default function About() {
   const imageScale = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const imageOpacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const imageRotate = useTransform(scrollYProgress, [0, 1], [-10, 0]);
+  const missionFontWeight = useTransform(scrollYProgress, [0, 1], [300, 800]);
 
   return (
     <section id="about" ref={containerRef} className="relative z-20 bg-transparent py-32 px-8 md:px-24 w-full overflow-hidden">
@@ -79,8 +80,8 @@ export default function About() {
 
           <AnimatedHeading 
             as="p"
-            text="I’m LALITH D — a creative developer and cybersecurity enthusiast focused on building visually immersive, secure, and high-performance digital systems that blend technology with refined user experience."
-            className="text-white/70 text-lg md:text-xl font-light leading-relaxed mb-8 max-w-3xl"
+            text="I’m LALITH D — a creative developer and cyber security enthusiast passionate about crafting immersive digital experiences that merge cinematic design, high-performance engineering, and secure modern technology. I specialize in building visually striking, interactive systems that not only look exceptional but also deliver seamless functionality, speed, and reliability. With a strong focus on innovation and refined user experience, I transform ideas into futuristic digital products that leave a lasting impact."
+            className="text-white/90 text-xl md:text-2xl font-semibold leading-relaxed mb-8 max-w-3xl tracking-tight"
           />
 
           <motion.div 
@@ -88,12 +89,15 @@ export default function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            className="p-6 rounded-2xl bg-[#FF7A18]/5 border border-[#FF7A18]/20 backdrop-blur-md relative overflow-hidden group cursor-default shadow-[0_0_30px_rgba(255,122,24,0.1)]"
+            className="p-6 rounded-2xl bg-[#4ADE80]/5 border border-[#4ADE80]/20 backdrop-blur-md relative overflow-hidden group cursor-default shadow-[0_0_30px_rgba(74,222,128,0.1)]"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A18]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <p className="text-[#FFD6A5] text-lg font-medium italic relative z-10 tracking-wide">
-              “Securing the future through intelligent systems and strategic cyber defense.”
-            </p>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#4ADE80]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <motion.p 
+              style={{ fontWeight: missionFontWeight }}
+              className="text-[#4ADE80] text-lg relative z-10 tracking-[0.2em] uppercase"
+            >
+              Transforming bold ideas into secure, immersive, and high-performance digital realities
+            </motion.p>
           </motion.div>
 
         </div>

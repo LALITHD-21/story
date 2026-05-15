@@ -216,11 +216,12 @@ export default function ExplodedGallery({ items }: ExplodedGalleryProps) {
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-white/40">{repo.updated}</span>
                   <LightBeamButton 
-                    className="px-4 py-1.5 text-xs group/btn"
+                    className="px-4 py-1.5 text-xs group/btn border border-[#00F2FF]/20"
+                    gradientColors={["#00F2FF", "#006AFF", "#00F2FF"]}
                     onClick={() => repo.url && window.open(repo.url, "_blank")}
                   >
-                    <GitFork className="w-3.5 h-3.5 group-hover/btn:text-[#FF7A18] transition-colors" /> 
-                    <span className="group-hover/btn:text-[#FF7A18] transition-colors">Source</span>
+                    <GitFork className="w-3.5 h-3.5 group-hover/btn:text-[#00F2FF] transition-colors" /> 
+                    <span className="group-hover/btn:text-[#00F2FF] transition-colors font-bold tracking-wider">Source</span>
                   </LightBeamButton>
                 </div>
               </div>
