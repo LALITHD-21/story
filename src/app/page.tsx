@@ -8,11 +8,18 @@ import Timeline from "@/components/Timeline";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
-// Heavy WebGL/Canvas/GSAP components — must be loaded client-side only
+// Heavy WebGL/Canvas components — loaded client-side only
 const ScrollyCanvas = dynamic(() => import("@/components/ScrollyCanvas"), { ssr: false });
 const Overlay = dynamic(() => import("@/components/Overlay"), { ssr: false });
 const AmbientBlobs = dynamic(() => import("@/components/AmbientBlobs"), { ssr: false });
-const GhostCursor = dynamic(() => import("@/components/GhostCursor"), { ssr: false });
+// GhostCursor is desktop-only — skip entirely on touch devices via dynamic + loading check
+const GhostCursor = dynamic(
+  () => import("@/components/GhostCursor").then((m) => m.default ?? m),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 export default function Home() {
   return (
@@ -21,7 +28,7 @@ export default function Home() {
       <AmbientBlobs />
       <Navbar />
 
-      {/* Ghost cursor — smoky warm trail following the mouse */}
+      {/* Ghost cursor — desktop only (hidden on touch via internal check) */}
       <GhostCursor
         color="#FF7A18"
         brightness={1.1}

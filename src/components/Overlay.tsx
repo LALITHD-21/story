@@ -1,13 +1,15 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { LightBeamButton } from "./LightBeamButton";
 
 export default function Overlay() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
   });
 
   // Section 1: Hero Intro (0% scroll) - Center
@@ -32,36 +34,72 @@ export default function Overlay() {
   const scale4 = useTransform(scrollYProgress, [0.82, 1], [0.85, 1.1]);
   const blur4 = useTransform(scrollYProgress, [0.82, 0.88], [10, 0]);
 
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
+  // Mouse glow: use ref + direct DOM style — no setState, no re-renders
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: e.clientX,
-        y: e.clientY,
-      });
+    const glow = glowRef.current;
+    if (!glow) return;
+
+    // Don't attach on touch devices (no cursor)
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+      glow.style.display = "none";
+      return;
+    }
+
+    let rafId: number | null = null;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      targetX = e.clientX - 160;
+      targetY = e.clientY - 160;
+
+      if (rafId === null) {
+        const animate = () => {
+          // Lerp for smooth spring-like motion
+          currentX += (targetX - currentX) * 0.12;
+          currentY += (targetY - currentY) * 0.12;
+          glow.style.transform = `translate(${currentX}px, ${currentY}px)`;
+
+          const dx = Math.abs(targetX - currentX);
+          const dy = Math.abs(targetY - currentY);
+          if (dx > 0.5 || dy > 0.5) {
+            rafId = requestAnimationFrame(animate);
+          } else {
+            rafId = null;
+          }
+        };
+        rafId = requestAnimationFrame(animate);
+      }
     };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full z-10 pointer-events-none">
-      
-      {/* Warm glow tracking cursor */}
-      <motion.div
-        className="fixed top-0 left-0 w-80 h-80 bg-[#FF7A18] rounded-full blur-[140px] opacity-[0.07] pointer-events-none mix-blend-screen"
-        animate={{
-          x: mousePosition.x - 160,
-          y: mousePosition.y - 160,
+
+      {/* Warm glow tracking cursor — direct DOM update, no re-render */}
+      <div
+        ref={glowRef}
+        className="fixed top-0 left-0 w-80 h-80 bg-[#FF7A18] rounded-full pointer-events-none mix-blend-screen"
+        style={{
+          filter: "blur(140px)",
+          opacity: 0.07,
+          willChange: "transform",
+          transform: "translate(-160px, -160px)",
         }}
-        transition={{ type: "spring", damping: 50, stiffness: 150, mass: 0.5 }}
       />
 
       <div className="sticky top-0 h-screen w-full flex items-center justify-center pointer-events-none overflow-hidden">
-        
+
         {/* SECTION 1 — Hero Center */}
-        <motion.div 
+        <motion.div
           style={{ opacity: op1, y: y1, filter: useTransform(blur1, (v) => `blur(${v}px)`) }}
           className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center pointer-events-none"
         >
@@ -75,7 +113,7 @@ export default function Overlay() {
             Building immersive digital experiences with precision, creativity, and innovation.
           </p>
           <div className="flex flex-col sm:flex-row gap-5 pointer-events-auto">
-            <LightBeamButton 
+            <LightBeamButton
               onClick={() => { document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' }) }}
             >
               View Projects
@@ -83,7 +121,7 @@ export default function Overlay() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </LightBeamButton>
-            <LightBeamButton 
+            <LightBeamButton
               onClick={() => { document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }) }}
               className="bg-transparent border border-white/10 shadow-none hover:bg-white/[0.08] hover:shadow-none"
               gradientColors={["transparent", "transparent", "transparent"]}
@@ -94,9 +132,9 @@ export default function Overlay() {
         </motion.div>
 
         {/* SECTION 2 — Left Aligned */}
-        <motion.div 
-          style={{ 
-            opacity: op2, 
+        <motion.div
+          style={{
+            opacity: op2,
             y: y2,
             filter: useTransform([blur2In, blur2Out], ([a, b]) => `blur(${Math.max(a as number, b as number)}px)`)
           }}
@@ -113,9 +151,9 @@ export default function Overlay() {
         </motion.div>
 
         {/* SECTION 3 — Right Aligned */}
-        <motion.div 
-          style={{ 
-            opacity: op3, 
+        <motion.div
+          style={{
+            opacity: op3,
             y: y3,
             filter: useTransform([blur3In, blur3Out], ([a, b]) => `blur(${Math.max(a as number, b as number)}px)`)
           }}
@@ -132,9 +170,9 @@ export default function Overlay() {
         </motion.div>
 
         {/* SECTION 4 — Cinematic Exit */}
-        <motion.div 
-          style={{ 
-            opacity: op4, 
+        <motion.div
+          style={{
+            opacity: op4,
             scale: scale4,
             filter: useTransform(blur4, (v) => `blur(${v}px)`)
           }}

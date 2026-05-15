@@ -37,7 +37,7 @@ export default function ExplodedGallery({ items }: ExplodedGalleryProps) {
           trigger: containerRef.current,
           start: "top top",
           end: "+=3000",
-          scrub: 1,
+          scrub: 0.5,
           pin: pinRef.current,
           anticipatePin: 1,
         }
@@ -182,7 +182,8 @@ export default function ExplodedGallery({ items }: ExplodedGalleryProps) {
                 zIndex: 50 - idx, // ensure proper initial stacking
                 // start slightly stacked with offsets
                 transform: `translate(${idx * 2}px, ${idx * 2}px) rotate(${idx * 1.5}deg)`,
-                opacity: 0.95
+                opacity: 0.95,
+                willChange: "transform, opacity"
               }}
             >
               {/* Card Content */}

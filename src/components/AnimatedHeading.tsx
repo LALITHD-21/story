@@ -26,12 +26,14 @@ export default function AnimatedHeading({ text, className = "", highlightWord, h
 
   const child = {
     hidden: {
-      y: "-120%",
+      y: "110%",
+      opacity: 0,
     },
     visible: {
       y: "0%",
+      opacity: 1,
       transition: {
-        duration: 0.8,
+        duration: 0.6,
         ease: [0.2, 0.65, 0.3, 0.9] as [number, number, number, number],
       },
     },
@@ -63,7 +65,11 @@ export default function AnimatedHeading({ text, className = "", highlightWord, h
               >
                 <motion.span
                   variants={child}
-                  style={{ display: "inline-block", whiteSpace: "pre" }}
+                  style={{ 
+                    display: "inline-block", 
+                    whiteSpace: "pre",
+                    willChange: "transform, opacity" 
+                  }}
                 >
                   {char}
                 </motion.span>

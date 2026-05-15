@@ -182,7 +182,7 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
   useEffect(() => {
     const host = containerRef.current;
     const parent = host?.parentElement;
-    if (!host || !parent) return;
+    if (!host || !parent || isTouch) return;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: !isTouch,
