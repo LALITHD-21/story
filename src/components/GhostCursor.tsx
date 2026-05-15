@@ -247,6 +247,7 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
 
     const resize = () => {
       const rect = host.getBoundingClientRect();
+      if (rect.width < 1 || rect.height < 1) return;
       const cssW = Math.max(1, Math.floor(rect.width));
       const cssH = Math.max(1, Math.floor(rect.height));
       const currentDPR = Math.min(window.devicePixelRatio || 1, maxDevicePixelRatio);

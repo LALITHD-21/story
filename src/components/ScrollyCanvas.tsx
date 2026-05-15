@@ -60,11 +60,16 @@ export default function ScrollyCanvas() {
       img.onload = () => {
         imagesRef.current[i] = img;
         
-        // As soon as the FIRST frame loads, draw it immediately!
-        // This completely eliminates the 3-5 second waiting period.
+        // Draw frame 0 immediately to prevent delay on load
         if (i === 0 && !firstFrameDrawn) {
           firstFrameDrawn = true;
           drawFrame(0);
+        } else {
+          // If the image that just loaded is the one we are currently trying to view, draw it!
+          const currentIdx = Math.floor(frameIndex.get());
+          if (i === currentIdx) {
+            drawFrame(currentIdx);
+          }
         }
       };
     }
