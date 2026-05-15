@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useScroll, useTransform, useMotionValueEvent, useSpring } from "framer-motion";
 
 const FRAME_COUNT = 192;
 const currentFrame = (index: number) =>
@@ -27,8 +27,14 @@ export default function ScrollyCanvas() {
     offset: ["start start", "end end"],
   });
 
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   const frameIndex = useTransform(
-    scrollYProgress,
+    smoothProgress,
     [0, 1],
     [0, FRAME_COUNT - 1]
   );

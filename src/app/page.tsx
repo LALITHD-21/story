@@ -44,8 +44,8 @@ export default function Home() {
         zIndex={5}
       />
 
-      {/* 500vh Cinematic Scroll Area */}
-      <div className="relative h-[500vh] w-full">
+      {/* 800vh Cinematic Scroll Area */}
+      <div className="relative h-[800vh] w-full">
         <ScrollyCanvas />
         <Overlay />
       </div>

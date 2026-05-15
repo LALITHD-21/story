@@ -36,7 +36,7 @@ export default function ExplodedGallery({ items }: ExplodedGalleryProps) {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: "+=3000",
+          end: "+=5000",
           scrub: 0.5,
           pin: pinRef.current,
           anticipatePin: 1,
