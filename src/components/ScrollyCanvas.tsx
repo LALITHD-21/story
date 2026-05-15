@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 const FRAME_COUNT = 192;
@@ -15,16 +15,22 @@ export default function ScrollyCanvas() {
     offset: ["start start", "end end"]
   });
   
-  const [images, setImages] = useState<HTMLImageElement[]>([]);
+  // Use a ref instead of state to store images. This avoids 192 state updates 
+  // while still allowing the scroll event to access the loaded images instantly.
+  const imagesRef = useRef<(HTMLImageElement | null)[]>(Array(FRAME_COUNT).fill(null));
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, FRAME_COUNT - 1]);
 
-  const drawFrame = (index: number, imgs: HTMLImageElement[]) => {
-    if (!canvasRef.current || !imgs[index]) return;
+  const drawFrame = (index: number) => {
+    if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const img = imgs[index];
+    // Get the image from our ref array
+    const img = imagesRef.current[index];
+    // If the image isn't loaded yet, just return (keep the previous frame on canvas)
+    if (!img || !img.complete || img.width === 0) return;
+
     const canvasRatio = canvas.width / canvas.height;
     const imgRatio = img.width / img.height;
 
@@ -46,30 +52,29 @@ export default function ScrollyCanvas() {
   };
 
   useEffect(() => {
-    const loadedImages: HTMLImageElement[] = [];
-    let loadedCount = 0;
+    let firstFrameDrawn = false;
 
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new Image();
       img.src = currentFrame(i);
       img.onload = () => {
-        loadedCount++;
-        if (loadedCount === FRAME_COUNT) {
-          drawFrame(0, loadedImages);
-          setImages(loadedImages);
+        imagesRef.current[i] = img;
+        
+        // As soon as the FIRST frame loads, draw it immediately!
+        // This completely eliminates the 3-5 second waiting period.
+        if (i === 0 && !firstFrameDrawn) {
+          firstFrameDrawn = true;
+          drawFrame(0);
         }
       };
-      loadedImages.push(img);
     }
   }, []);
 
   useMotionValueEvent(frameIndex, "change", (latest) => {
-    if (images.length > 0) {
-      // Use requestAnimationFrame for smoother rendering
-      requestAnimationFrame(() => {
-        drawFrame(Math.floor(latest), images);
-      });
-    }
+    // Use requestAnimationFrame for smoother rendering
+    requestAnimationFrame(() => {
+      drawFrame(Math.floor(latest));
+    });
   });
 
   useEffect(() => {
@@ -77,16 +82,15 @@ export default function ScrollyCanvas() {
       if (canvasRef.current) {
         canvasRef.current.width = window.innerWidth;
         canvasRef.current.height = window.innerHeight;
-        if (images.length > 0) {
-          drawFrame(Math.floor(frameIndex.get()), images);
-        }
+        // Redraw current frame on resize to prevent stretching
+        drawFrame(Math.floor(frameIndex.get()));
       }
     };
     
     window.addEventListener("resize", handleResize);
     handleResize(); 
     return () => window.removeEventListener("resize", handleResize);
-  }, [images, frameIndex]);
+  }, [frameIndex]);
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full z-0">
