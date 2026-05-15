@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 const FRAME_COUNT = 192;
@@ -9,6 +9,7 @@ const currentFrame = (index: number) =>
 export default function ScrollyCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -31,24 +32,13 @@ export default function ScrollyCanvas() {
     // If the image isn't loaded yet, just return (keep the previous frame on canvas)
     if (!img || !img.complete || img.width === 0) return;
 
-    const canvasRatio = canvas.width / canvas.height;
-    const imgRatio = img.width / img.height;
-
-    let drawWidth = canvas.width;
-    let drawHeight = canvas.height;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    if (canvasRatio > imgRatio) {
-      drawHeight = canvas.width / imgRatio;
-      offsetY = (canvas.height - drawHeight) / 2;
-    } else {
-      drawWidth = canvas.height * imgRatio;
-      offsetX = (canvas.width - drawWidth) / 2;
-    }
+    // Use pure CSS object-fit: cover by matching canvas resolution to image resolution.
+    // This allows the browser to hardware-accelerate the scaling perfectly on mobile and desktop.
+    canvas.width = img.width || 1920;
+    canvas.height = img.height || 1080;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    ctx.drawImage(img, 0, 0);
   };
 
   useEffect(() => {
@@ -64,6 +54,7 @@ export default function ScrollyCanvas() {
         if (i === 0 && !firstFrameDrawn) {
           firstFrameDrawn = true;
           drawFrame(0);
+          setIsLoaded(true); // Trigger the fade-in
         } else {
           // If the image that just loaded is the one we are currently trying to view, draw it!
           const currentIdx = Math.floor(frameIndex.get());
@@ -73,6 +64,7 @@ export default function ScrollyCanvas() {
         }
       };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useMotionValueEvent(frameIndex, "change", (latest) => {
@@ -82,25 +74,16 @@ export default function ScrollyCanvas() {
     });
   });
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (canvasRef.current) {
-        canvasRef.current.width = window.innerWidth;
-        canvasRef.current.height = window.innerHeight;
-        // Redraw current frame on resize to prevent stretching
-        drawFrame(Math.floor(frameIndex.get()));
-      }
-    };
-    
-    window.addEventListener("resize", handleResize);
-    handleResize(); 
-    return () => window.removeEventListener("resize", handleResize);
-  }, [frameIndex]);
+  // Notice: We don't need a window resize listener anymore! 
+  // CSS object-fit: cover automatically handles fluid resizing.
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full z-0">
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#0F0B08]">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-cover" />
+        <canvas 
+          ref={canvasRef} 
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+        />
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
       </div>
     </div>
