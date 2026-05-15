@@ -1,4 +1,8 @@
+"use client";
 import dynamic from "next/dynamic";
+import { useRef } from "react";
+import { useScroll } from "framer-motion";
+
 import Navbar from "@/components/Navbar";
 import NoiseLayer from "@/components/NoiseLayer";
 import About from "@/components/About";
@@ -12,7 +16,6 @@ import Footer from "@/components/Footer";
 const ScrollyCanvas = dynamic(() => import("@/components/ScrollyCanvas"), { ssr: false });
 const Overlay = dynamic(() => import("@/components/Overlay"), { ssr: false });
 const AmbientBlobs = dynamic(() => import("@/components/AmbientBlobs"), { ssr: false });
-// GhostCursor is desktop-only — skip entirely on touch devices via dynamic + loading check
 const GhostCursor = dynamic(
   () => import("@/components/GhostCursor").then((m) => m.default ?? m),
   {
@@ -22,13 +25,21 @@ const GhostCursor = dynamic(
 );
 
 export default function Home() {
+  const cinematicContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Single source of truth for the cinematic scroll progress
+  const { scrollYProgress } = useScroll({
+    target: cinematicContainerRef,
+    offset: ["start start", "end end"],
+  });
+
   return (
     <main className="relative bg-[#0F0B08] min-h-screen text-white font-sans selection:bg-[#FF7A18]/30">
       <NoiseLayer />
       <AmbientBlobs />
       <Navbar />
 
-      {/* Ghost cursor — desktop only (hidden on touch via internal check) */}
+      {/* Ghost cursor — desktop only */}
       <GhostCursor
         color="#FF7A18"
         brightness={1.1}
@@ -45,9 +56,9 @@ export default function Home() {
       />
 
       {/* 800vh Cinematic Scroll Area */}
-      <div className="relative h-[800vh] w-full">
-        <ScrollyCanvas />
-        <Overlay />
+      <div ref={cinematicContainerRef} className="relative h-[800vh] w-full">
+        <ScrollyCanvas scrollProgress={scrollYProgress} />
+        <Overlay scrollProgress={scrollYProgress} />
       </div>
 
       {/* Additional sections */}

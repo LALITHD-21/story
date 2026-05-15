@@ -19,7 +19,6 @@ export interface LightBeamButtonProps extends HTMLMotionProps<"button"> {
  * LightBeamButton
  * 
  * A high-performance button with a rotating light beam border effect.
- * Uses CSS @property for smooth gradient rotation animations on the border.
  */
 export function LightBeamButton({ 
   children, 
@@ -35,11 +34,6 @@ export function LightBeamButton({
   return (
     <>
       <style>{`
-        @property --gradient-angle {
-          syntax: "<angle>";
-          initial-value: 0deg;
-          inherits: false;
-        }
         @keyframes border-spin {
           from { --gradient-angle: 0deg; }
           to { --gradient-angle: 360deg; }

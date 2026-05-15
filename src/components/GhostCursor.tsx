@@ -260,7 +260,9 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
       const hpx = Math.max(1, Math.floor(cssH * pixelRatio));
       material.uniforms.iResolution.value.set(wpx, hpx, 1);
       material.uniforms.iScale.value = calculateScale(host);
-      bloomPass.setSize(wpx, hpx);
+      if (wpx > 0 && hpx > 0) {
+        bloomPass.setSize(wpx, hpx);
+      }
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -271,8 +273,16 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
     const animate = () => {
       const now = performance.now();
       const t = (now - start) / 1000;
-      const mat = materialRef.current!;
-      const comp = composerRef.current!;
+      const mat = materialRef.current;
+      const comp = composerRef.current;
+      if (!mat || !comp) return;
+
+      const rect = host.getBoundingClientRect();
+      if (rect.width < 1 || rect.height < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
       if (pointerActiveRef.current) {
         velocityRef.current.set(currentMouseRef.current.x - mat.uniforms.iMouse.value.x, currentMouseRef.current.y - mat.uniforms.iMouse.value.y);
         mat.uniforms.iMouse.value.copy(currentMouseRef.current);
@@ -290,7 +300,7 @@ export const GhostCursor: React.FC<GhostCursorProps> = ({
       headRef.current = (headRef.current + 1) % N;
       trailBufRef.current[headRef.current].copy(mat.uniforms.iMouse.value);
       const arr = mat.uniforms.iPrevMouse.value as THREE.Vector2[];
-      for (let i = 0; i < N; i++) {
+      for (int i = 0; i < N; i++) {
         const srcIdx = (headRef.current - i + N) % N;
         arr[i].copy(trailBufRef.current[srcIdx]);
       }
